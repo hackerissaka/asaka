@@ -1,0 +1,2596 @@
+
+SQL*Plus: Release 11.2.0.2.0 Production on Thu Jul 12 14:00:24 2018
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+SQL> connect system/oracle11g
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+SQL> connect system/orcl11g
+Connected.
+SQL> create table sss;
+create table sss
+               *
+ERROR at line 1:
+ORA-00906: missing left parenthesis
+
+
+SQL> CREATE DATABASE;
+CREATE DATABASE
+*
+ERROR at line 1:
+ORA-01501: CREATE DATABASE failed
+ORA-01100: database already mounted
+
+
+SQL> connect oracle/orcl11g
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+Warning: You are no longer connected to ORACLE.
+SQL> connect system/orcl11g
+Connected.
+SQL> CREATE TABLE Student_Master
+  2  (
+  3  Stud_Code NUMBER(4),
+  4  Stud_Name VARCHAR2(20),
+  5  Stud_Dob DATE,
+  6  Address VARCHAR2(30)
+  7  );
+
+Table created.
+
+SQL> DESC Student_Master
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUD_CODE                                          NUMBER(4)
+ STUD_NAME                                          VARCHAR2(20)
+ STUD_DOB                                           DATE
+ ADDRESS                                            VARCHAR2(30)
+
+SQL> CREATE TABLE Department_Master
+  2  (
+  3  Dept_Code NUMBER(2) CONSTRAINT Dept_Code_Pk PRIMARY KEY,
+  4  Dept_Name VARCHAR2(30) NOT NULL
+  5  );
+
+Table created.
+
+SQL> Desc Department_Master;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DEPT_CODE                                 NOT NULL NUMBER(2)
+ DEPT_NAME                                 NOT NULL VARCHAR2(30)
+
+SQL> INSERT INTO Department_Master(Dept_Code, Dept_Name)
+  2  VALUES(null,null);
+VALUES(null,null)
+       *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into ("SYSTEM"."DEPARTMENT_MASTER"."DEPT_CODE")
+
+
+SQL> INSERT INTO Department_Master(Dept_Code, Dept_Name)
+  2  VALUES(10,null);
+VALUES(10,null)
+          *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into ("SYSTEM"."DEPARTMENT_MASTER"."DEPT_NAME")
+
+
+SQL> INSERT INTO Department_Master(Dept_Code, Dept_Name)
+  2  VALUES(10,'HR');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> INSERT INTO Staff_Master(Staff_Code, Staff_Name,EmailID,HireDate, Dept_Code) VALUES(1002,'Maria','maria@cg.com','02-Feb-2015',10);
+
+1 row created.
+
+SQL> INSERT INTO Staff_Master(Staff_Code, Staff_Name,EmailID, Dept_Code) VALUES(1003,'shiffali','shiffali@cg.com',20);
+
+1 row created.
+
+SQL> Select * from Staff_Master;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE
+---------------------------------------- --------- ----------
+      1001 Robert
+
+
+      1002 Maria
+maria@cg.com                             02-FEB-15         10
+
+      1003 shiffali
+shiffali@cg.com                          12-JUL-18         20
+
+
+SQL> Create Table Staff_Master_Dept10
+  2  As
+  3  Select Staff_Code,Staff_Name, Dept_Code
+  4  From Staff_Master
+  5  Where Dept_Code=10;
+
+Table created.
+
+SQL> Desc Staff_Master_Dept10;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STAFF_CODE                                         NUMBER(4)
+ STAFF_NAME                                NOT NULL VARCHAR2(30)
+ DEPT_CODE                                          NUMBER(20)
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> desc Student_master;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUD_CODE                                          NUMBER(4)
+ STUD_NAME                                          VARCHAR2(20)
+ STUD_DOB                                           DATE
+ ADDRESS                                            VARCHAR2(30)
+
+SQL> Alter table Student_Master
+  2  Add City VARCHAR2(20);
+
+Table altered.
+
+SQL> desc Student_master;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUD_CODE                                          NUMBER(4)
+ STUD_NAME                                          VARCHAR2(20)
+ STUD_DOB                                           DATE
+ ADDRESS                                            VARCHAR2(30)
+ CITY                                               VARCHAR2(20)
+
+SQL> alter table Student_Master
+  2  Add CONSTRAINT Stud_Code_Pk PRIMARY KEY(Stude_Code);
+Add CONSTRAINT Stud_Code_Pk PRIMARY KEY(Stude_Code)
+                                        *
+ERROR at line 2:
+ORA-00904: "STUDE_CODE": invalid identifier
+
+
+SQL> Add CONSTRAINT Stud_Code_Pk PRIMARY KEY(Stud_Code);
+SP2-0734: unknown command beginning "Add CONSTR..." - rest of line ignored.
+SQL> alter table Student_Master
+  2  Add CONSTRAINT Stud_Code_Pk PRIMARY KEY(Stud_Code);
+
+Table altered.
+
+SQL> desc Student_Master;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUD_CODE                                 NOT NULL NUMBER(4)
+ STUD_NAME                                          VARCHAR2(20)
+ STUD_DOB                                           DATE
+ ADDRESS                                            VARCHAR2(30)
+ CITY                                               VARCHAR2(20)
+
+SQL> alter table Student_Master
+  2  add CONSTRAINT City_ck CHECK(CITY IN('Pune','Mumbai','Bangalore'));
+
+Table altered.
+
+SQL> alter table Student_Master
+  2  modify CONSTRAINT City_ck CHECK(CITY IN('Pune','Mumbai','Bangalore','chennai','Hyderabad'));
+modify CONSTRAINT City_ck CHECK(CITY IN('Pune','Mumbai','Bangalore','chennai','Hyderabad'))
+                          *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended
+
+
+SQL> desc Student_Master;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUD_CODE                                 NOT NULL NUMBER(4)
+ STUD_NAME                                          VARCHAR2(20)
+ STUD_DOB                                           DATE
+ ADDRESS                                            VARCHAR2(30)
+ CITY                                               VARCHAR2(20)
+
+SQL> Alter table Student_Master
+  2  Modify Stud_Name VARCHAR(40);
+
+Table altered.
+
+SQL> Insert into Student_Master(Stud_Code,Stud_Name, Stud_Dob,Address, City)
+  2  Values(1001,'Jason','02-Apr-1976','ABC','Pune');
+
+1 row created.
+
+SQL> Alter table Student_Master
+  2  disable constraint City_ck;
+
+Table altered.
+
+SQL> Insert into Student_Master(Stud_Code,Stud_Name, Stud_Dob,Address, City)
+  2  Values(1001,'Jason','02-Apr-1976','ABC','Pune');
+Insert into Student_Master(Stud_Code,Stud_Name, Stud_Dob,Address, City)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.STUD_CODE_PK) violated
+
+
+SQL> Insert into Student_Master(Stud_Code,Stud_Name, Stud_Dob,Address, City)
+  2  Values(1002,'Jason','02-Apr-1976','ABC','Pune');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+
+
+
+
+SQL*Plus: Release 11.2.0.2.0 Production on Fri Jul 13 10:10:58 2018
+
+Copyright (c) 1982, 2014, Oracle.  All rights reserved.
+
+SQL> connect system/orcl11g
+Connected.
+SQL> Select * from Department_Master
+  2  ;
+
+ DEPT_CODE DEPT_NAME
+---------- ------------------------------
+        10 HR
+        20 HR
+
+SQL> Update department_Master
+  2  Set Dept_Name='IT';
+
+2 rows updated.
+
+SQL> Select * from Department_Master;
+
+ DEPT_CODE DEPT_NAME
+---------- ------------------------------
+        10 IT
+        20 IT
+
+SQL> Update department_Master
+  2  Set Dept_Name='HR' where dept_code=10;
+
+1 row updated.
+
+SQL> Select * from Department_Master;
+
+ DEPT_CODE DEPT_NAME
+---------- ------------------------------
+        10 HR
+        20 IT
+
+SQL> Select * from Student_Master;
+
+ STUD_CODE STUD_NAME                                STUD_DOB
+---------- ---------------------------------------- ---------
+ADDRESS                        CITY
+------------------------------ --------------------
+      1001 Jason                                    02-APR-76
+ABC                            Pune
+
+      1002 Jason                                    02-APR-76
+ABC                            Pune
+
+
+SQL> Select * from Staff_Master;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE
+---------------------------------------- --------- ----------
+      1001 Robert
+
+
+      1002 Maria
+maria@cg.com                             02-FEB-15         10
+
+      1003 shiffali
+shiffali@cg.com                          12-JUL-18         20
+
+
+SQL> update staff_master
+  2  Set daept_code=20
+  3  ;
+Set daept_code=20
+    *
+ERROR at line 2:
+ORA-00904: "DAEPT_CODE": invalid identifier
+
+
+SQL> update staff_master
+  2  Set dept_code=20
+  3  Where dept_code is null;
+
+1 row updated.
+
+SQL> insert into Staff_master values(&Staff_Name,'&staff_name','&EmailID','&HireDate','&Dept_code);
+Enter value for staff_name: gfdgd
+Enter value for staff_name: dfgfddg
+Enter value for emailid: fgd
+Enter value for hiredate: fgd
+Enter value for dept_code: gfdg
+old   1: insert into Staff_master values(&Staff_Name,'&staff_name','&EmailID','&HireDate','&Dept_code)
+new   1: insert into Staff_master values(gfdgd,'dfgfddg','fgd','fgd','gfdg)
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> insert into Staff_master values(&Staff_code,'&staff_name','&EmailID','&HireDate','&Dept_code);
+Enter value for staff_code: 1005
+Enter value for staff_name: Will
+Enter value for emailid: will@cg.com
+Enter value for hiredate: 12-dec-2014
+Enter value for dept_code: 10
+old   1: insert into Staff_master values(&Staff_code,'&staff_name','&EmailID','&HireDate','&Dept_code)
+new   1: insert into Staff_master values(1005,'Will','will@cg.com','12-dec-2014','10)
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> insert into Staff_master values(&Staff_code,'&staff_name','&EmailID','&HireDate','&Dept_code');
+Enter value for staff_code: 1005
+Enter value for staff_name: will
+Enter value for emailid: will@cg.com
+Enter value for hiredate: 12-dec-2014
+Enter value for dept_code: 10
+old   1: insert into Staff_master values(&Staff_code,'&staff_name','&EmailID','&HireDate','&Dept_code')
+new   1: insert into Staff_master values(1005,'will','will@cg.com','12-dec-2014','10')
+
+1 row created.
+
+SQL> Commit;
+
+Commit complete.
+
+SQL> Delete from student_master;
+
+2 rows deleted.
+
+SQL> select*from student_master;
+
+no rows selected
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> select*from student_master;
+
+ STUD_CODE STUD_NAME                                STUD_DOB
+---------- ---------------------------------------- ---------
+ADDRESS                        CITY
+------------------------------ --------------------
+      1001 Jason                                    02-APR-76
+ABC                            Pune
+
+      1002 Jason                                    02-APR-76
+ABC                            Pune
+
+
+SQL> SELECT staff_code,staff_name
+  2  from Staff_master;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1001 Robert
+      1002 Maria
+      1003 shiffali
+      1005 will
+
+SQL> select * from staff_master where dept_code=10;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE
+---------------------------------------- --------- ----------
+      1002 Maria
+maria@cg.com                             02-FEB-15         10
+
+      1005 will
+will@cg.com                              12-DEC-14         10
+
+
+SQL> select staff_code, staff_name from staff_master where dept_code=10;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1002 Maria
+      1005 will
+
+SQL> select staff_code, staff_name,dept_code from staff_master where dept_code=10;
+
+STAFF_CODE STAFF_NAME                      DEPT_CODE
+---------- ------------------------------ ----------
+      1002 Maria                                  10
+      1005 will                                   10
+
+SQL> desc staff_master;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STAFF_CODE                                NOT NULL NUMBER(4)
+ STAFF_NAME                                NOT NULL VARCHAR2(30)
+ EMAILID                                            VARCHAR2(40)
+ HIREDATE                                           DATE
+ DEPT_CODE                                          NUMBER(20)
+
+SQL> select staff_code as "Faculty ID", Staff_name "Faculty Name"
+  2  from staff_Master;
+
+Faculty ID Faculty Name
+---------- ------------------------------
+      1001 Robert
+      1002 Maria
+      1003 shiffali
+      1005 will
+
+SQL> select * from staff_master;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE
+---------------------------------------- --------- ----------
+      1001 Robert
+                                                           20
+
+      1002 Maria
+maria@cg.com                             02-FEB-15         10
+
+      1003 shiffali
+shiffali@cg.com                          12-JUL-18         20
+
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE
+---------------------------------------- --------- ----------
+      1005 will
+will@cg.com                              12-DEC-14         10
+
+
+SQL> Alter table Staff_master
+  2  add(salary NUMBER(8),city Varchar(20));
+
+Table altered.
+
+SQL> update staff_master
+  2  set salary = 20000
+  3  where dept_code=20;
+
+2 rows updated.
+
+SQL> update staff_master
+  2  set salary = 30000
+  3  where dept_code=20;
+
+2 rows updated.
+
+SQL> COMMIT;
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1006
+Enter value for staff_name: 'Rajeev'
+Enter value for emailid: 'rajeev@cg.com'
+Enter value for hiredate: '11-nov-2008'
+Enter value for dept_code: 20
+Enter value for salary: 45678
+Enter value for city: 'Mumbai'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1006,'Rajeev','rajeev@cg.com','11-nov-2008',20,45678,'Mumbai')
+
+1 row created.
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1008
+Enter value for staff_name: 'Mohan'
+Enter value for emailid: 'mohan@cg.com'
+Enter value for hiredate: '02-feb-2015'
+Enter value for dept_code: 10
+Enter value for salary: 15000
+Enter value for city: 'Mumbai'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1008,'Mohan','mohan@cg.com','02-feb-2015',10,15000,'Mumbai')
+
+1 row created.
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1009
+Enter value for staff_name: 'Raghu'
+Enter value for emailid: 'raghu@cg.com'
+Enter value for hiredate: '15-jun-2017'
+Enter value for dept_code: 20
+Enter value for salary: 40000
+Enter value for city: 'Pune'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1009,'Raghu','raghu@cg.com','15-jun-2017',20,40000,'Pune')
+
+1 row created.
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1010
+Enter value for staff_name: 'Vishakha'
+Enter value for emailid: 'vishakha@cg.com'
+Enter value for hiredate: '28-dec-2016'
+Enter value for dept_code: 40
+Enter value for salary: 20000
+Enter value for city: 'Chennai'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1010,'Vishakha','vishakha@cg.com','28-dec-2016',40,20000,'Chennai')
+
+1 row created.
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1011
+Enter value for staff_name: 'Rekha'
+Enter value for emailid: 'rekha@cg.com'
+Enter value for hiredate: '14-nov-2015'
+Enter value for dept_code: 10
+Enter value for salary: 10000
+Enter value for city: 'Chennai'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1011,'Rekha','rekha@cg.com','14-nov-2015',10,10000,'Chennai')
+
+1 row created.
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1012
+Enter value for staff_name: 'Vishal'
+Enter value for emailid: 'vishal@cg.com'
+Enter value for hiredate: '17-may-2017'
+Enter value for dept_code: 10
+Enter value for salary: 18000
+Enter value for city: 'Pune'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1012,'Vishal','vishal@cg.com','17-may-2017',10,18000,'Pune')
+
+1 row created.
+
+SQL> insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city);
+Enter value for staff_code: 1013
+Enter value for staff_name: 'Vrushali'
+Enter value for emailid: 'vrushali@cg.com'
+Enter value for hiredate: '05-may-2016'
+Enter value for dept_code: 20
+Enter value for salary: 30000
+Enter value for city: 'Mumbai'
+old   1: insert into staff_master values(&staff_code,&staff_name,&emailID,&Hiredate,&dept_code,&salary,&city)
+new   1: insert into staff_master values(1013,'Vrushali','vrushali@cg.com','05-may-2016',20,30000,'Mumbai')
+
+1 row created.
+
+SQL> select staff_code,staff_name,salary from staff_master where salary>40000;
+
+STAFF_CODE STAFF_NAME                         SALARY
+---------- ------------------------------ ----------
+      1006 Rajeev                              45678
+
+SQL> select staff_code,staff_name,salary from staff_master where salary<40000;
+
+STAFF_CODE STAFF_NAME                         SALARY
+---------- ------------------------------ ----------
+      1001 Robert                              30000
+      1003 shiffali                            30000
+      1008 Mohan                               15000
+      1010 Vishakha                            20000
+      1011 Rekha                               10000
+      1012 Vishal                              18000
+      1013 Vrushali                            30000
+
+7 rows selected.
+
+
+SQL> select staff_code,staff_name,city from staff_master where city= 'Pune' OR city='Mumbai';
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1006 Rajeev                         Mumbai
+      1008 Mohan                          Mumbai
+      1009 Raghu                          Pune
+      1012 Vishal                         Pune
+      1013 Vrushali                       Mumbai
+
+SQL> select * from staff_master;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+      1001 Robert
+                                                           20      30000
+
+
+      1002 Maria
+maria@cg.com                             02-FEB-15         10
+
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+
+      1003 shiffali
+shiffali@cg.com                          12-JUL-18         20      30000
+
+
+      1005 will
+will@cg.com                              12-DEC-14         10
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+
+
+      1006 Rajeev
+rajeev@cg.com                            11-NOV-08         20      45678
+Mumbai
+
+      1008 Mohan
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+mohan@cg.com                             02-FEB-15         10      15000
+Mumbai
+
+      1009 Raghu
+raghu@cg.com                             15-JUN-17         20      40000
+Pune
+
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+      1010 Vishakha
+vishakha@cg.com                          28-DEC-16         40      20000
+Chennai
+
+      1011 Rekha
+rekha@cg.com                             14-NOV-15         10      10000
+Chennai
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+
+      1012 Vishal
+vishal@cg.com                            17-MAY-17         10      18000
+Pune
+
+      1013 Vrushali
+vrushali@cg.com                          05-MAY-16         20      30000
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID                                  HIREDATE   DEPT_CODE     SALARY
+---------------------------------------- --------- ---------- ----------
+CITY
+--------------------
+Mumbai
+
+
+11 rows selected.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select staff_code,staff_name,city from staff_master where city='Pune' AND dept_code=10;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1012 Vishal                         Pune
+
+SQL> select staff_code,staff_name,city from staff_master where city='Pune' AND dept_code!=10;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1009 Raghu                          Pune
+
+
+SQL> select staff_code,staff_name,city from staff_master where city='Pune' AND dept_code=10;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1012 Vishal                         Pune
+
+SQL> select staff_code,staff_name,city from staff_master where city='Pune' AND dept_code!=10;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1009 Raghu                          Pune
+
+SQL> select staff_code,staff_name,salary from staff_master where salary>20000 AND salary<40000;
+
+STAFF_CODE STAFF_NAME                         SALARY
+---------- ------------------------------ ----------
+      1001 Robert                              30000
+      1003 shiffali                            30000
+      1013 Vrushali                            30000
+
+SQL> select staff_code,staff_name,city from staff_master where city='Pune' AND dept_code=10;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1012 Vishal                         Pune
+
+SQL> select staff_code,staff_name,city from staff_master where city='Pune' OR dept_code=10;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1002 Maria
+      1005 will
+      1008 Mohan                          Mumbai
+      1009 Raghu                          Pune
+      1011 Rekha                          Chennai
+      1012 Vishal                         Pune
+
+6 rows selected
+
+
+SQL> select staff_code,staff_name, salary from staff_master
+  2  where salary between 20000 and 40000;
+
+STAFF_CODE STAFF_NAME                         SALARY
+---------- ------------------------------ ----------
+      1001 Robert                              30000
+      1003 shiffali                            30000
+      1009 Raghu                               40000
+      1010 Vishakha                            20000
+      1013 Vrushali                            30000
+
+SQL> select staff_code,staff_name, salary from staff_master
+  2  where salary not  between 20000 and 40000;
+
+STAFF_CODE STAFF_NAME                         SALARY
+---------- ------------------------------ ----------
+      1006 Rajeev                              45678
+      1008 Mohan                               15000
+      1011 Rekha                               10000
+      1012 Vishal                              18000
+
+SQL> select staff_code,staff_name, dept_code from staff_master
+  2  where dept_code IN (10,30,40);
+
+STAFF_CODE STAFF_NAME                      DEPT_CODE
+---------- ------------------------------ ----------
+      1002 Maria                                  10
+      1005 will                                   10
+      1008 Mohan                                  10
+      1010 Vishakha                               40
+      1011 Rekha                                  10
+      1012 Vishal                                 10
+
+6 rows selected.
+
+SQL> select staff_code,staff_name, dept_code from staff_master
+  2  where dept_code Not IN (10,30,40);
+
+STAFF_CODE STAFF_NAME                      DEPT_CODE
+---------- ------------------------------ ----------
+      1001 Robert                                 20
+      1003 shiffali                               20
+      1006 Rajeev                                 20
+      1009 Raghu                                  20
+      1013 Vrushali                               20
+
+SQL> select staff_code,staff_name, city from staff_master
+  2  where city in ('Pune','Mumbai','Chennai');
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1006 Rajeev                         Mumbai
+      1008 Mohan                          Mumbai
+      1009 Raghu                          Pune
+      1010 Vishakha                       Chennai
+      1011 Rekha                          Chennai
+      1012 Vishal                         Pune
+      1013 Vrushali                       Mumbai
+
+7 rows selected.
+
+SQL> select staff_code,staff_name from staff_master
+  2  where staff_name LIKE 'R%';
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1001 Robert
+      1006 Rajeev
+      1009 Raghu
+      1011 Rekha
+
+SQL> select staff_code,staff_name from staff_master
+  2  where staff_name LIKE '%ha';
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1010 Vishakha
+      1011 Rekha
+
+SQL> select staff_code,staff_name from staff_master
+  2  where staff_name LIKE '%sh%';
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1003 shiffali
+      1010 Vishakha
+      1012 Vishal
+      1013 Vrushali
+
+SQL> select staff_code,staff_name from staff_master
+  2  where staff_name LIKE 'ra___';
+
+no rows selected
+
+SQL> select staff_code,staff_name from staff_master
+  2  where staff_name LIKE 'Ra___';
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1009 Raghu
+
+SQL> select staff_code,staff_name from staff_master
+  2  where staff_name not  LIKE 'Ra___';
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+      1001 Robert
+      1002 Maria
+      1003 shiffali
+      1005 will
+      1006 Rajeev
+      1008 Mohan
+      1010 Vishakha
+      1011 Rekha
+      1012 Vishal
+      1013 Vrushali
+
+10 rows selected.
+
+SQL> select staff_code,staff_name,emailID from staff_master
+  2  where emailID IS NULL;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID
+----------------------------------------
+      1001 Robert
+
+
+
+SQL> select staff_code,staff_name,emailID from staff_master
+  2  where emailID IS Not Null;
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID
+----------------------------------------
+      1002 Maria
+maria@cg.com
+
+      1003 shiffali
+shiffali@cg.com
+
+      1005 will
+will@cg.com
+
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID
+----------------------------------------
+      1006 Rajeev
+rajeev@cg.com
+
+      1008 Mohan
+mohan@cg.com
+
+      1009 Raghu
+raghu@cg.com
+
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID
+----------------------------------------
+      1010 Vishakha
+vishakha@cg.com
+
+      1011 Rekha
+rekha@cg.com
+
+      1012 Vishal
+vishal@cg.com
+
+
+STAFF_CODE STAFF_NAME
+---------- ------------------------------
+EMAILID
+----------------------------------------
+      1013 Vrushali
+vrushali@cg.com
+
+
+10 rows selected.
+
+SQL> select staff_code,staff_name,city from staff_master
+  2  where city is not null;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1006 Rajeev                         Mumbai
+      1008 Mohan                          Mumbai
+      1009 Raghu                          Pune
+      1010 Vishakha                       Chennai
+      1011 Rekha                          Chennai
+      1012 Vishal                         Pune
+      1013 Vrushali                       Mumbai
+
+7 rows selected.
+
+SQL> select staff_code,staff_name,city from staff_master
+  2  where city is null;
+
+STAFF_CODE STAFF_NAME                     CITY
+---------- ------------------------------ --------------------
+      1001 Robert
+      1002 Maria
+      1003 shiffali
+      1005 will
+
+SQL> COMMIT;
+
+Commit complete.
+
+
+SQL> select 'Hello ' || Staff_name AS Greet_Staff from staff_master;
+
+GREET_STAFF
+------------------------------------
+Hello Robert
+Hello Maria
+Hello shiffali
+Hello will
+Hello Rajeev
+Hello Mohan
+Hello Raghu
+Hello Vishakha
+Hello Rekha
+Hello Vishal
+Hello Vrushali
+
+11 rows selected.
+
+SQL> select staff_name || 'Is working in' || CITY from staff_master;
+
+STAFF_NAME||'ISWORKINGIN'||CITY
+---------------------------------------------------------------
+RobertIs working in
+MariaIs working in
+shiffaliIs working in
+willIs working in
+RajeevIs working inMumbai
+MohanIs working inMumbai
+RaghuIs working inPune
+VishakhaIs working inChennai
+RekhaIs working inChennai
+VishalIs working inPune
+VrushaliIs working inMumbai
+
+11 rows selected.
+
+SQL> select sysdate from dual;
+
+SYSDATE
+---------
+13-JUL-18
+
+SQL> select city from staff_master
+  2  ;
+
+CITY
+--------------------
+
+
+
+
+Mumbai
+Mumbai
+Pune
+Chennai
+Chennai
+Pune
+Mumbai
+
+11 rows selected.
+
+
+SQL> select distinct city from staff_master;
+
+CITY
+--------------------
+
+Mumbai
+Pune
+Chennai
+
+SQL> connect system/orcl11g
+Connected.
+SQL> Select count (*) from staff_master;
+
+  COUNT(*)
+----------
+        11
+
+SQL> select count(city) from staff_master;
+
+COUNT(CITY)
+-----------
+          7
+
+SQL> select sum(salary) from staff_master;
+
+SUM(SALARY)
+-----------
+     238678
+
+SQL> select sum(salary),AVG(salary) from staff_master;
+
+SUM(SALARY) AVG(SALARY)
+----------- -----------
+     238678  26519.7778
+
+SQL> select sum(salary),AVG(salary),min(salary),max(salary) from staff_master;
+
+SUM(SALARY) AVG(SALARY) MIN(SALARY) MAX(SALARY)
+----------- ----------- ----------- -----------
+     238678  26519.7778       10000       45678
+
+SQL> select sum(dept_code) from staff_master;
+
+SUM(DEPT_CODE)
+--------------
+           190
+
+
+SQL> select dept_code,avg(salary) from staff_master group by dept_code;
+
+ DEPT_CODE AVG(SALARY)
+---------- -----------
+        20     35135.6
+        40       20000
+        10  14333.3333
+
+SQL>
+SQL> select dept_code,sum(salary) from staff_master group by dept_code;
+
+ DEPT_CODE SUM(SALARY)
+---------- -----------
+        20      175678
+        40       20000
+        10       43000
+
+SQL> select dept_code,sum(salary),AVG(salary),min(salary),max(salary) from staff_master
+  2  group by dept_code;
+
+ DEPT_CODE SUM(SALARY) AVG(SALARY) MIN(SALARY) MAX(SALARY)
+---------- ----------- ----------- ----------- -----------
+        20      175678     35135.6       30000       45678
+        40       20000       20000       20000       20000
+        10       43000  14333.3333       10000       18000
+
+SQL> select count(staff_name) from staff_master group by dept_code;
+
+COUNT(STAFF_NAME)
+-----------------
+                5
+                1
+                5
+
+SQL> select dept_code,count(staff_name) from staff_master group by dept_code;
+
+ DEPT_CODE COUNT(STAFF_NAME)
+---------- -----------------
+        20                 5
+        40                 1
+        10                 5
+
+SQL> select dept_code,count(staff_name) from staff_master group by dept_code Having count(staff_name)>3;
+
+ DEPT_CODE COUNT(STAFF_NAME)
+---------- -----------------
+        20                 5
+        10                 5
+
+SQL> select trunc(125.67) from dual;
+
+TRUNC(125.67)
+-------------
+          125
+
+SQL> select trunc(125.67,1) from dual;
+
+TRUNC(125.67,1)
+---------------
+          125.6
+
+SQL> select trunc(125.67,4) from dual;
+
+TRUNC(125.67,4)
+---------------
+         125.67
+
+SQL> select round(125.67)
+  2  from dual;
+
+ROUND(125.67)
+-------------
+          126
+
+SQL> select round(125.67,1)
+  2  from dual;
+
+ROUND(125.67,1)
+---------------
+          125.7
+
+SQL> select ceil(125.67) from dual;
+
+CEIL(125.67)
+------------
+         126
+
+SQL> select ceil(125.34) from dual;
+
+CEIL(125.34)
+------------
+         126
+
+SQL> select floor(125.34) from dual;
+
+FLOOR(125.34)
+-------------
+          125
+
+SQL> select abs(-14) from dual;
+
+  ABS(-14)
+----------
+        14
+
+SQL> select power(2,9) from dual
+  2  ;
+
+POWER(2,9)
+----------
+       512
+
+SQL> select sqrt(4) from dual;
+
+   SQRT(4)
+----------
+         2
+
+SQL> select sign(14) from dual;
+
+  SIGN(14)
+----------
+         1
+
+SQL> select sign(0) from dual;
+
+   SIGN(0)
+----------
+         0
+
+SQL> select mod(234,13) from dual;
+
+MOD(234,13)
+-----------
+          0
+
+SQL> select mod(237,13) from dual;
+
+MOD(237,13)
+-----------
+          3
+
+SQL> select Lower('CHARACTER') from dual;
+
+LOWER('CH
+---------
+character
+
+SQL> select Upper('character') from dual;
+
+UPPER('CH
+---------
+CHARACTER
+
+SQL> select INITCAP('raDha IS cOmInG') from dual;
+
+INITCAP('RADHAI
+---------------
+Radha Is Coming
+
+SQL> select CONCAT('Sweta','Rani') from dual;
+
+CONCAT('S
+---------
+SwetaRani
+
+SQL> select CONCAT('Sweta    ','Rani') from dual;
+
+CONCAT('SWETA
+-------------
+Sweta    Rani
+
+SQL> select CONCAT('Sweta ','Rani') from dual;
+
+CONCAT('SW
+----------
+Sweta Rani
+
+SQL> select CONCAT('Sweta    ','Rani') from dual;^Z
+
+  2
+SQL> select substr('jee fullstack batch bangalore',5) from dual;
+
+SUBSTR('JEEFULLSTACKBATCH
+-------------------------
+fullstack batch bangalore
+
+SQL> select substr('jee fullstack batch bangalore',5,4) from dual;
+
+SUBS
+----
+full
+
+SQL> select ltrim('                        ABC                           ')from dual;
+
+LTRIM('ABC')
+------------------------------
+ABC
+
+SQL> select rtrim('                        ABC                           ')from dual;
+
+RTRIM('ABC')
+---------------------------
+                        ABC
+
+SQL> select length(staff_name) from staff_master;
+
+LENGTH(STAFF_NAME)
+------------------
+                 6
+                 5
+                 8
+                 4
+                 6
+                 5
+                 5
+                 8
+                 5
+                 6
+                 8
+
+11 rows selected.
+
+SQL> select staff_name,length(staff_name) from staff_master;
+
+STAFF_NAME                     LENGTH(STAFF_NAME)
+------------------------------ ------------------
+Robert                                          6
+Maria                                           5
+shiffali                                        8
+will                                            4
+Rajeev                                          6
+Mohan                                           5
+Raghu                                           5
+Vishakha                                        8
+Rekha                                           5
+Vishal                                          6
+Vrushali                                        8
+
+11 rows selected.
+
+SQL> select REPLACE('JEE regular Batch','Regular','FullStack') from dual;
+
+REPLACE('JEEREGUL
+-----------------
+JEE regular Batch
+
+SQL> select REPLACE('JEE Regular Batch','Regular','FullStack') from dual;
+
+REPLACE('JEEREGULAR
+-------------------
+JEE FullStack Batch
+
+SQL> select LPAD(staff_name,6,'x') from staff_master;
+
+LPAD(STAFF_NAME,6,'X')
+------------------------
+Robert
+xMaria
+shiffa
+xxwill
+Rajeev
+xMohan
+xRaghu
+Vishak
+xRekha
+Vishal
+Vrusha
+
+11 rows selected.
+
+SQL> select RPAD(staff_name,6,'x') from staff_master;
+
+RPAD(STAFF_NAME,6,'X')
+------------------------
+Robert
+Mariax
+shiffa
+willxx
+Rajeev
+Mohanx
+Raghux
+Vishak
+Rekhax
+Vishal
+Vrusha
+
+11 rows selected.
+
+SQL> select RPAD(staff_name,6,'*') from staff_master;
+
+RPAD(STAFF_NAME,6,'*')
+------------------------
+Robert
+Maria*
+shiffa
+will**
+Rajeev
+Mohan*
+Raghu*
+Vishak
+Rekha*
+Vishal
+Vrusha
+
+11 rows selected.
+
+SQL> select RPAD(staff_name,6,'________') from staff_master;
+
+RPAD(STAFF_NAME,6,'_____
+------------------------
+Robert
+Maria_
+shiffa
+will__
+Rajeev
+Mohan_
+Raghu_
+Vishak
+Rekha_
+Vishal
+Vrusha
+
+11 rows selected.
+
+SQL> select RPAD(staff_name,6,'___skdjal_______') from staff_master;
+
+RPAD(STAFF_NAME,6,'___SK
+------------------------
+Robert
+Maria_
+shiffa
+will__
+Rajeev
+Mohan_
+Raghu_
+Vishak
+Rekha_
+Vishal
+Vrusha
+
+11 rows selected.
+
+
+SQL> select last_day(sysdate) from dual;
+
+LAST_DAY(
+---------
+31-JUL-18
+
+SQL> select Extract(year from sysdate) from dual;
+
+EXTRACT(YEARFROMSYSDATE)
+------------------------
+                    2018
+
+SQL> select to_char(sysdate,'dd month,yyyy') from dual;
+
+TO_CHAR(SYSDATE,'DDMONTH,YYYY')
+--------------------------------------------
+13 july     ,2018
+
+SQL> select *  from dual;
+
+D
+-
+X
+
+SQL> select hiredate from staff_master;
+
+HIREDATE
+---------
+
+02-FEB-15
+12-JUL-18
+12-DEC-14
+11-NOV-08
+02-FEB-15
+15-JUN-17
+28-DEC-16
+14-NOV-15
+17-MAY-17
+05-MAY-16
+
+11 rows selected.
+
+SQL> select hiredate from staff_master where hiredate is not null;
+
+HIREDATE
+---------
+02-FEB-15
+12-JUL-18
+12-DEC-14
+11-NOV-08
+02-FEB-15
+15-JUN-17
+28-DEC-16
+14-NOV-15
+17-MAY-17
+05-MAY-16
+
+10 rows selected.
+
+SQL> select hiredate,add_months(hiredate,4) from staff_master where hiredate is not null;
+
+HIREDATE  ADD_MONTH
+--------- ---------
+02-FEB-15 02-JUN-15
+12-JUL-18 12-NOV-18
+12-DEC-14 12-APR-15
+11-NOV-08 11-MAR-09
+02-FEB-15 02-JUN-15
+15-JUN-17 15-OCT-17
+28-DEC-16 28-APR-17
+14-NOV-15 14-MAR-16
+17-MAY-17 17-SEP-17
+05-MAY-16 05-SEP-16
+
+10 rows selected.
+
+SQL> select hiredate,months_between(sysdate,hiredate) from staff_master where hiredate is not null;
+
+HIREDATE  MONTHS_BETWEEN(SYSDATE,HIREDATE)
+--------- --------------------------------
+02-FEB-15                       41.3780974
+12-JUL-18                       .033548014
+12-DEC-14                       43.0555167
+11-NOV-08                       116.087775
+02-FEB-15                       41.3780974
+15-JUN-17                       12.9587425
+28-DEC-16                       18.5393877
+14-NOV-15                       31.9910006
+17-MAY-17                       13.8942264
+05-MAY-16                       26.2813232
+
+10 rows selected.
+
+SQL> select hiredate,last_day(sysdate,hiredate) from staff_master where hiredate is not null;
+select hiredate,last_day(sysdate,hiredate) from staff_master where hiredate is not null
+                *
+ERROR at line 1:
+ORA-00909: invalid number of arguments
+
+
+SQL> select hiredate,last_day(hiredate) from staff_master where hiredate is not null;
+
+HIREDATE  LAST_DAY(
+--------- ---------
+02-FEB-15 28-FEB-15
+12-JUL-18 31-JUL-18
+12-DEC-14 31-DEC-14
+11-NOV-08 30-NOV-08
+02-FEB-15 28-FEB-15
+15-JUN-17 30-JUN-17
+28-DEC-16 31-DEC-16
+14-NOV-15 30-NOV-15
+17-MAY-17 31-MAY-17
+05-MAY-16 31-MAY-16
+
+10 rows selected.
+
+SQL> select hiredate,next_day(hiredate) from staff_master where hiredate is not null;
+select hiredate,next_day(hiredate) from staff_master where hiredate is not null
+                *
+ERROR at line 1:
+ORA-00909: invalid number of arguments
+
+
+SQL> select hiredate,next_day(hiredate,'MONDAY') from staff_master where hiredate is not null;
+
+HIREDATE  NEXT_DAY(
+--------- ---------
+02-FEB-15 09-FEB-15
+12-JUL-18 16-JUL-18
+12-DEC-14 15-DEC-14
+11-NOV-08 17-NOV-08
+02-FEB-15 09-FEB-15
+15-JUN-17 19-JUN-17
+28-DEC-16 02-JAN-17
+14-NOV-15 16-NOV-15
+17-MAY-17 22-MAY-17
+05-MAY-16 09-MAY-16
+
+10 rows selected.
+
+SQL> select current_date from dual;
+
+CURRENT_D
+---------
+13-JUL-18
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+13-JUL-18 05.23.42.678000 PM +05:30
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+13-JUL-18 05.24.03.683000 PM +05:30
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+13-JUL-18 05.24.06.795000 PM +05:30
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+13-JUL-18 05.24.08.196000 PM +05:30
+
+SQL> select current_timestamp from dual;
+
+CURRENT_TIMESTAMP
+---------------------------------------------------------------------------
+13-JUL-18 05.24.09.112000 PM +05:30
+
+SQL> select hiredate, Extract(YEAR from hiredate)from staff_master where hiredate is not null;
+
+HIREDATE  EXTRACT(YEARFROMHIREDATE)
+--------- -------------------------
+02-FEB-15                      2015
+12-JUL-18                      2018
+12-DEC-14                      2014
+11-NOV-08                      2008
+02-FEB-15                      2015
+15-JUN-17                      2017
+28-DEC-16                      2016
+14-NOV-15                      2015
+17-MAY-17                      2017
+05-MAY-16                      2016
+
+10 rows selected.
+
+SQL> select hiredate, Extract(month from hiredate)from staff_master where hiredate is not null;
+
+HIREDATE  EXTRACT(MONTHFROMHIREDATE)
+--------- --------------------------
+02-FEB-15                          2
+12-JUL-18                          7
+12-DEC-14                         12
+11-NOV-08                         11
+02-FEB-15                          2
+15-JUN-17                          6
+28-DEC-16                         12
+14-NOV-15                         11
+17-MAY-17                          5
+05-MAY-16                          5
+
+10 rows selected.
+
+SQL> select hiredate, Extract(day from hiredate)from staff_master where hiredate is not null;
+
+HIREDATE  EXTRACT(DAYFROMHIREDATE)
+--------- ------------------------
+02-FEB-15                        2
+12-JUL-18                       12
+12-DEC-14                       12
+11-NOV-08                       11
+02-FEB-15                        2
+15-JUN-17                       15
+28-DEC-16                       28
+14-NOV-15                       14
+17-MAY-17                       17
+05-MAY-16                        5
+
+10 rows selected.
+
+SQL> select Extract(hour from current_timestamp) from dual;
+
+EXTRACT(HOURFROMCURRENT_TIMESTAMP)
+----------------------------------
+                                11
+
+SQL> select Extract(hour from current_timestamp) from dual;
+
+EXTRACT(HOURFROMCURRENT_TIMESTAMP)
+----------------------------------
+                                11
+
+SQL> select Extract(hour from current_time) from dual;
+select Extract(hour from current_time) from dual
+                         *
+ERROR at line 1:
+ORA-00904: "CURRENT_TIME": invalid identifier
+
+
+SQL> select sysdate - hiredate from staff_master where hiredate is not null;
+
+SYSDATE-HIREDATE
+----------------
+      1257.73057
+      1.04953704
+      1309.73057
+      3531.73057
+      1257.73057
+      393.730567
+      562.730567
+      972.730567
+      422.730567
+      799.730567
+
+10 rows selected.
+
+SQL> select hiredate,sysdate - hiredate from staff_master where hiredate is not null;
+
+HIREDATE  SYSDATE-HIREDATE
+--------- ----------------
+02-FEB-15       1257.73086
+12-JUL-18       1.04982639
+12-DEC-14       1309.73086
+11-NOV-08       3531.73086
+02-FEB-15       1257.73086
+15-JUN-17       393.730856
+28-DEC-16       562.730856
+14-NOV-15       972.730856
+17-MAY-17       422.730856
+05-MAY-16       799.730856
+
+10 rows selected.
+
+SQL> select to_char(sysdate,'Month Day, YYYY0 FROM DUAL;
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> select to_char(sysdate,'Month Day, YYYY) FROM DUAL;
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> select to_char(sysdate,'Month Day, YYYY') FROM DUAL;
+
+TO_CHAR(SYSDATE,'MONTHDAY,YYYY')
+-------------------------------------------------------------------------------
+July      Friday   , 2018
+
+SQL> select to_char(sysdate,'Month DD, YYYY') FROM DUAL;
+
+TO_CHAR(SYSDATE,'MONTHDD,YYYY')
+---------------------------------------------
+July      13, 2018
+
+SQL> select to_char(sysdate,'Day,DDth Month, YYYY') FROM DUAL;
+
+TO_CHAR(SYSDATE,'DAY,DDTHMONTH,YYYY')
+--------------------------------------------------------------------------------
+Friday   ,13TH July     , 2018
+
+SQL> select to_char(sysdate,'Day,DDth Month, YYYY HH:MM:SS') FROM DUAL;
+
+TO_CHAR(SYSDATE,'DAY,DDTHMONTH,YYYYHH:MM:SS')
+--------------------------------------------------------------------------------
+Friday   ,13TH July     , 2018 05:07:48
+
+SQL> select hiredate from staff_master where hiredate<'12-jun-2018'
+  2  ;
+
+HIREDATE
+---------
+02-FEB-15
+12-DEC-14
+11-NOV-08
+02-FEB-15
+15-JUN-17
+28-DEC-16
+14-NOV-15
+17-MAY-17
+05-MAY-16
+
+9 rows selected.
+
+SQL> select hiredate from staff_master where hiredate<'to_date(June 12,2018)';
+select hiredate from staff_master where hiredate<'to_date(June 12,2018)'
+                                                 *
+ERROR at line 1:
+ORA-01858: a non-numeric character was found where a numeric was expected
+
+
+SQL> select hiredate from staff_master where hiredate<to_date(June 12,2018)';
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> select hiredate from staff_master where hiredate<to_date('June 12,2018','Month day,YYYY');
+select hiredate from staff_master where hiredate<to_date('June 12,2018','Month day,YYYY')
+                                                         *
+ERROR at line 1:
+ORA-01846: not a valid day of the week
+
+
+SQL> select to_char(salary,'$99,999.00') from staff_master;
+
+TO_CHAR(SAL
+-----------
+ $30,000.00
+
+ $30,000.00
+
+ $45,678.00
+ $15,000.00
+ $40,000.00
+ $20,000.00
+ $10,000.00
+ $18,000.00
+ $30,000.00
+
+11 rows selected.
+
+SQL> select to_char(17000,'$99,999.00') from dual;
+
+TO_CHAR(170
+-----------
+ $17,000.00
+
+SQL> clean;
+SP2-0042: unknown command "clean" - rest of line ignored.
+SQL> select hiredate,nvl(hiredate, sysdate) from satff_master;
+select hiredate,nvl(hiredate, sysdate) from satff_master
+                                            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> select hiredate,nvl(hiredate, sysdate) from staff_master;
+
+HIREDATE  NVL(HIRED
+--------- ---------
+          13-JUL-18
+02-FEB-15 02-FEB-15
+12-JUL-18 12-JUL-18
+12-DEC-14 12-DEC-14
+11-NOV-08 11-NOV-08
+02-FEB-15 02-FEB-15
+15-JUN-17 15-JUN-17
+28-DEC-16 28-DEC-16
+14-NOV-15 14-NOV-15
+17-MAY-17 17-MAY-17
+05-MAY-16 05-MAY-16
+
+11 rows selected.
+
+SQL> select city,nvl(city, 'Not Provided') from staff_master;
+
+CITY                 NVL(CITY,'NOTPROVIDE
+-------------------- --------------------
+                     Not Provided
+                     Not Provided
+                     Not Provided
+                     Not Provided
+Mumbai               Mumbai
+Mumbai               Mumbai
+Pune                 Pune
+Chennai              Chennai
+Chennai              Chennai
+Pune                 Pune
+Mumbai               Mumbai
+
+11 rows selected.
+
+SQL> select city,NVL2(city,'Provided','Not Provided') from staff_master;
+
+CITY                 NVL2(CITY,'P
+-------------------- ------------
+                     Not Provided
+                     Not Provided
+                     Not Provided
+                     Not Provided
+Mumbai               Provided
+Mumbai               Provided
+Pune                 Provided
+Chennai              Provided
+Chennai              Provided
+Pune                 Provided
+Mumbai               Provided
+
+11 rows selected.
+
+SQL> select city,NVL2(city,'Provided','Not Provided') from staff_master;
+
+CITY                 NVL2(CITY,'P
+-------------------- ------------
+                     Not Provided
+                     Not Provided
+                     Not Provided
+                     Not Provided
+Mumbai               Provided
+Mumbai               Provided
+Pune                 Provided
+Chennai              Provided
+Chennai              Provided
+Pune                 Provided
+Mumbai               Provided
+
+11 rows selected.
+
+SQL> select city, case city when 'Pune' Then 'Maharashtra'
+  2  when 'Mumbai' then'Maharashtra'
+  3  when 'Bangalore' then 'Karnataka'
+  4  when 'Chennai' then 'Tamil Nadu'
+  5  ELSE 'Not Known'
+  6  End
+  7  from Staff_master;
+
+CITY                 CASECITYWHE
+-------------------- -----------
+                     Not Known
+                     Not Known
+                     Not Known
+                     Not Known
+Mumbai               Maharashtra
+Mumbai               Maharashtra
+Pune                 Maharashtra
+Chennai              Tamil Nadu
+Chennai              Tamil Nadu
+Pune                 Maharashtra
+Mumbai               Maharashtra
+
+11 rows selected.
+
+SQL> select city, Decode(City,'Pune','Maharashtra','Mumbai','Maharashtra','Bangalore','Karnataka','Chennai','Tamil Nadu','Not Known') from staff_master;
+
+CITY                 DECODE(CITY
+-------------------- -----------
+                     Not Known
+                     Not Known
+                     Not Known
+                     Not Known
+Mumbai               Maharashtra
+Mumbai               Maharashtra
+Pune                 Maharashtra
+Chennai              Tamil Nadu
+Chennai              Tamil Nadu
+Pune                 Maharashtra
+Mumbai               Maharashtra
+
+11 rows selected.
+
+SQL> insert into staff_master(staff_code,staff_name, EmailId,Dept_code,city,salary) values(1014,'Ritual','ritual@cg.com',null,'Bangalore',30000);
+
+1 row created.
+
+SQL> insert into staff_master(staff_code,staff_name, EmailId,Dept_code,city,salary) values(1015,'Tennyson','tennyson@cg.com',null,'Pune',35000);
+
+1 row created.
+
+SQL> commit;
+
+
+SQL> select staff_code,staff_name,dept_name from Staff_Master, Department_master;
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1001 Robert                         HR
+      1002 Maria                          HR
+      1003 shiffali                       HR
+      1005 will                           HR
+      1006 Rajeev                         HR
+      1008 Mohan                          HR
+      1009 Raghu                          HR
+      1010 Vishakha                       HR
+      1011 Rekha                          HR
+      1012 Vishal                         HR
+      1013 Vrushali                       HR
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1014 Ritual                         HR
+      1015 Tennyson                       HR
+      1001 Robert                         IT
+      1002 Maria                          IT
+      1003 shiffali                       IT
+      1005 will                           IT
+      1006 Rajeev                         IT
+      1008 Mohan                          IT
+      1009 Raghu                          IT
+      1010 Vishakha                       IT
+      1011 Rekha                          IT
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1012 Vishal                         IT
+      1013 Vrushali                       IT
+      1014 Ritual                         IT
+      1015 Tennyson                       IT
+      1001 Robert                         support
+      1002 Maria                          support
+      1003 shiffali                       support
+      1005 will                           support
+      1006 Rajeev                         support
+      1008 Mohan                          support
+      1009 Raghu                          support
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1010 Vishakha                       support
+      1011 Rekha                          support
+      1012 Vishal                         support
+      1013 Vrushali                       support
+      1014 Ritual                         support
+      1015 Tennyson                       support
+      1001 Robert                         IITMD
+      1002 Maria                          IITMD
+      1003 shiffali                       IITMD
+      1005 will                           IITMD
+      1006 Rajeev                         IITMD
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1008 Mohan                          IITMD
+      1009 Raghu                          IITMD
+      1010 Vishakha                       IITMD
+      1011 Rekha                          IITMD
+      1012 Vishal                         IITMD
+      1013 Vrushali                       IITMD
+      1014 Ritual                         IITMD
+      1015 Tennyson                       IITMD
+      1001 Robert                         Testing
+      1002 Maria                          Testing
+      1003 shiffali                       Testing
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1005 will                           Testing
+      1006 Rajeev                         Testing
+      1008 Mohan                          Testing
+      1009 Raghu                          Testing
+      1010 Vishakha                       Testing
+      1011 Rekha                          Testing
+      1012 Vishal                         Testing
+      1013 Vrushali                       Testing
+      1014 Ritual                         Testing
+      1015 Tennyson                       Testing
+      1001 Robert                         ICRES
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1002 Maria                          ICRES
+      1003 shiffali                       ICRES
+      1005 will                           ICRES
+      1006 Rajeev                         ICRES
+      1008 Mohan                          ICRES
+      1009 Raghu                          ICRES
+      1010 Vishakha                       ICRES
+      1011 Rekha                          ICRES
+      1012 Vishal                         ICRES
+      1013 Vrushali                       ICRES
+      1014 Ritual                         ICRES
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1015 Tennyson                       ICRES
+
+78 rows selected.
+
+SQL> select staff_code,staff_name,dept_name from Staff_Master, Department_master where staff_Master.dept_code = department_master.dept_code;
+
+STAFF_CODE STAFF_NAME                     DEPT_NAME
+---------- ------------------------------ ------------------------------
+      1001 Robert                         IT
+      1002 Maria                          HR
+      1003 shiffali                       IT
+      1005 will                           HR
+      1006 Rajeev                         IT
+      1008 Mohan                          HR
+      1009 Raghu                          IT
+      1010 Vishakha                       IITMD
+      1011 Rekha                          HR
+      1012 Vishal                         HR
+      1013 Vrushali                       IT
+
+11 rows selected.
+
+SQL> select staff.staff_code,staff.dept_code,dept.dept_name from staff_master staff, Department_master dept Where staff.dept_code(+)=dept.Dept_Code;
+
+STAFF_CODE  DEPT_CODE DEPT_NAME
+---------- ---------- ------------------------------
+      1001         20 IT
+      1002         10 HR
+      1003         20 IT
+      1005         10 HR
+      1006         20 IT
+      1008         10 HR
+      1009         20 IT
+      1010         40 IITMD
+      1011         10 HR
+      1012         10 HR
+      1013         20 IT
+
+STAFF_CODE  DEPT_CODE DEPT_NAME
+---------- ---------- ------------------------------
+                      Testing
+                      support
+                      ICRES
+
+14 rows selected.
+
+SQL> select staff.staff_code,staff.dept_code,dept.dept_name from staff_master staff, Department_master dept Where dept.Dept_Code(+)=staff.dept_code;
+
+STAFF_CODE  DEPT_CODE DEPT_NAME
+---------- ---------- ------------------------------
+      1012         10 HR
+      1011         10 HR
+      1008         10 HR
+      1005         10 HR
+      1002         10 HR
+      1013         20 IT
+      1009         20 IT
+      1006         20 IT
+      1003         20 IT
+      1001         20 IT
+      1010         40 IITMD
+
+STAFF_CODE  DEPT_CODE DEPT_NAME
+---------- ---------- ------------------------------
+      1015
+      1014
+
+13 rows selected.
+
+SQL> select staff_name,staff_code,staff_sal from staff_master
+  2  where salary = (select min(salary) from staff_master);
+select staff_name,staff_code,staff_sal from staff_master
+                             *
+ERROR at line 1:
+ORA-00904: "STAFF_SAL": invalid identifier
+
+
+SQL> select staff_name,staff_code,salary from staff_master
+  2  where salary = (select min(salary) from staff_master);
+
+STAFF_NAME                     STAFF_CODE     SALARY
+------------------------------ ---------- ----------
+Rekha                                1011      10000
+
+SQL> select staff_code,salary from staff_master where salary>ANY(select avg(salary) from staff_master group by dept_code);
+
+STAFF_CODE     SALARY
+---------- ----------
+      1006      45678
+      1009      40000
+      1015      35000
+      1001      30000
+      1003      30000
+      1013      30000
+      1014      30000
+      1010      20000
+      1012      18000
+      1008      15000
+
+10 rows selected.
+
+SQL> create index salary_index ON staff_master(salary);
+
+Index created.
+
+SQL> create UNIQUE INDEX staff_ename_unindex ON staff_Master(staff_name);
+
+Index created.
+
+SQL> select object_name,object_type from user_objects where object type = 'INDEX';
+select object_name,object_type from user_objects where object type = 'INDEX'
+                                                              *
+ERROR at line 1:
+ORA-00920: invalid relational operator
+
+
+SQL> select object_name,object_type from user_objects where object_type= 'INDEX';
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_SESSION_EVOLVE$_PK
+INDEX
+
+LOGMNR_UID$_PK
+INDEX
+
+LOGMNRC_DBNAME_UID_MAP_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_LOG$_PK
+INDEX
+
+LOGMNR_LOG$_FLAGS
+INDEX
+
+LOGMNR_LOG$_FIRST_CHANGE#
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_LOG$_RECID
+INDEX
+
+LOGMNR_PROCESSED_LOG$_PK
+INDEX
+
+LOGMNR_SPILL$_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_AGE_SPILL$_PK
+INDEX
+
+LOGMNR_RESTART_CKPT_TXINFO$_PK
+INDEX
+
+LOGMNR_RESTART_CKPT$_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_INTEG_SPILL$_PK
+INDEX
+
+LOGMNR_SESSION_ACTION$_PK
+INDEX
+
+LOGMNR_PARAMETER_INDX
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_SESSION_PK
+INDEX
+
+LOGMNR_SESSION_UK1
+INDEX
+
+LOGMNRT_MDDL$_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+MVIEW$_ADV_WORKLOAD_PK
+INDEX
+
+MVIEW$_ADV_WORKLOAD_IDX_01
+INDEX
+
+MVIEW$_ADV_BASETABLE_IDX_01
+INDEX
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+MVIEW$_ADV_FILTER_PK
+INDEX
+
+MVIEW$_ADV_LOG_PK
+INDEX
+
+MVIEW$_ADV_LEVEL_PK
+INDEX
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_REPPROP_DBLINK_HOW
+INDEX
+
+REPCAT$_REPPROP_KEY_INDEX
+INDEX
+
+REPCAT$_REPPROP_PRNT_IDX
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_REPPROP_PRNT2_IDX
+INDEX
+
+REPCAT$_REPCATLOG_PRIMARY
+INDEX
+
+REPCAT$_REPCATLOG_GNAME
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_DDL_INDEX
+INDEX
+
+REPCAT$_DDL
+INDEX
+
+REPCAT$_REPGROUP_PRIVS_UK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_REPGROUP_PRIVS_N1
+INDEX
+
+REPCAT$_REPGROUP_PRIVS_FK_IDX
+INDEX
+
+REPCAT$_PRIORITY_GROUP_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_PRIORITY_GROUP_U1
+INDEX
+
+REPCAT$_PRIORITY_PK
+INDEX
+
+REPCAT$_PRIORITY_F1_IDX
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_COLUMN_GROUP_PK
+INDEX
+
+REPCAT$_GROUPED_COLUMN_PK
+INDEX
+
+REPCAT$_GROUPED_COLUMN_F1_IDX
+INDEX
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_INSTANTIATION_DDL_PK
+INDEX
+
+SYS_C003081
+INDEX
+
+REPCAT$_SITES_NEW_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+REPCAT$_SITES_NEW_FK2_IDX
+INDEX
+
+REPCAT$_SITES_NEW_FK1_IDX
+INDEX
+
+REPCAT$_TEMPLATE_OBJECTS_N2
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I2TABCOMPART$
+INDEX
+
+LOGMNR_I1TYPE$
+INDEX
+
+LOGMNR_I1COLTYPE$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I1ATTRIBUTE$
+INDEX
+
+LOGMNR_I1LOB$
+INDEX
+
+LOGMNR_I1CDEF$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I1CCOL$
+INDEX
+
+LOGMNR_I1ICOL$
+INDEX
+
+LOGMNR_I1LOBFRAG$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I1INDPART$
+INDEX
+
+LOGMNR_I2INDPART$
+INDEX
+
+LOGMNR_I1INDSUBPART$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I1INDCOMPART$
+INDEX
+
+LOGMNR_I1LOGMNR_BUILDLOG
+INDEX
+
+LOGMNR_I1NTAB$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I2NTAB$
+INDEX
+
+LOGMNR_I1OPQTYPE$
+INDEX
+
+LOGMNR_I1SUBCOLTYPE$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I1KOPM$
+INDEX
+
+LOGMNR_I1PROPS$
+INDEX
+
+LOGMNR_I1ENC$
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNR_I1REFCON$
+INDEX
+
+LOGMNR_I1PARTOBJ$
+INDEX
+
+LOGMNRP_CTAS_PART_MAP_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGMNRP_CTAS_PART_MAP_I
+INDEX
+
+LOGSTDBY$EVENTS_IND
+INDEX
+
+LOGSTDBY$EVENTS_IND_SCN
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGSTDBY$EVENTS_IND_XID
+INDEX
+
+SYS_C003346
+INDEX
+
+LOGSTDBY$SKIP_IDX1
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+LOGSTDBY$SKIP_IDX2
+INDEX
+
+LOGSTDBY$SKIP_IND
+INDEX
+
+LOGSTDBY$EDS_TABLES_PKEY
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+SYS_C003540
+INDEX
+
+SYS_C003543
+INDEX
+
+DEF$_TRANORDER
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+HELP_TOPIC_SEQ
+INDEX
+
+DEPT_CODE_PK
+INDEX
+
+STAFF_CODE_PK
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+EMAIL_UK
+INDEX
+
+STUD_CODE_PK
+INDEX
+
+SALARY_INDEX
+INDEX
+
+
+OBJECT_NAME
+--------------------------------------------------------------------------------
+OBJECT_TYPE
+-------------------
+STAFF_ENAME_UNINDEX
+INDEX
+
+
+217 rows selected.
+
+SQL> select object_name,object_type from user_objects where object_name='staff_sal_index';
+
+no rows selected
+
+SQL> select object_name,object_type from user_objects where object_name='salary_index';
+
+no rows selected
+
+SQL> create view staff_view as select * from staff_master where hiredate>'01-jan-82';
+
+View created.
